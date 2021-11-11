@@ -1,0 +1,88 @@
+
+<html>
+<title></title>
+
+<head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script><script type="text/javascript">
+            $(document).ready(function(){
+		thisDueDate = new Date(2350, 1, 1, 1, 1, 1);
+		rightNow = new Date();
+		var dueDateTable = {};
+				var studyRoomTitleID = 833931;    
+				
+//Add a new variable to reference the title control numbers following the style above, for example:
+// var calculatorTitleID=123456;
+               
+                $.getJSON("https://loyno.louislibraries.org/lalo_ilsws/rest/standard/lookupTitleInfo?clientID=SymWSTestClient&titleID=" + studyRoomTitleID + "&includeAvailabilityInfo=true&includeItemInfo=true&json=true&callback=?", function(data){
+		    		var numstudyRoomsAvailable = data.TitleInfo[0].TitleAvailabilityInfo.totalResvCopiesAvailable;
+
+//add a new variable here to store the titleinfo for the new equipment following the style above, for example:
+			//var numCalculatorsAvailable = data.TitleInfo[6].TitleAvailabilityInfo.totalResvCopiesAvailable;
+//This parses the info from your web services request and stores it for use later
+		    		$('#numstudyRoomsAvailable').append(numstudyRoomsAvailable);
+					
+                   //add the number available for example:
+				   //$('#numNCalculatorAvailable').append(numCalculatorAvailable);
+		    $.each(data.TitleInfo, function(){
+	    		thisDueDate = new Date(2350, 1, 1, 1, 1, 1);
+			var itemType = this.titleID.toString()
+			$.each(this.CallInfo, function(){
+			    var itemCallNumber = this.callNumber;
+			    $.each(this.ItemInfo, function(){
+				if (this.dueDate){
+				    dateDue = new Date(this.dueDate);
+				    if ((thisDueDate > dateDue) && (rightNow < dateDue)) {
+					thisDueDate = dateDue;
+					if (thisDueDate.getHours() > 12){
+						var dueHours = thisDueDate.getHours() - 12;
+						var AMPM = 'PM';
+					} else if (thisDueDate.getHours() == 12){
+						var dueHours = thisDueDate.getHours();
+						var AMPM = 'PM';
+					} else {
+						dueHours = thisDueDate.getHours();
+						AMPM = 'AM';
+					}
+					if (thisDueDate.getMinutes() < 10){
+						var dueMinutes = '0' + thisDueDate.getMinutes();
+					} else {
+						dueMinutes = thisDueDate.getMinutes();
+					}
+					dueDateTable[itemType] = dueHours + ':' + dueMinutes + ' ' + AMPM;
+				    }
+				}
+			    });
+			});
+			
+			if (numstudyRoomsAvailable == 0){
+				$('#numstudyRoomsAvailable').html('Study Rooms: next due ' + dueDateTable['833931']);
+			}
+			
+		    });
+			//add new equipment here too following the same template:
+			//if (numCalculatorAvailable == 0){
+			//				$('#numCalculatorAvailable').html('Calculators: next due ' + dueDateTable['123456']);
+			//			}
+		
+		});
+            });
+                
+        </script>
+</head>
+<body>
+<style type="text/css"><!--
+.style1 {font-family: Arial, Helvetica, sans-serif; font-size:50px;}
+-->
+</style>
+<img src="http://people.loyno.edu/~lrosen/sign_graphic.png" width="100%" />
+<ul style="list-style-type:none">
+	<li>
+	<div class="style1" id="numstudyRoomsAvailable" width="100%">Study Rooms Available:</div>
+	</li>
+</ul>
+
+<!--Add the new equipment here to print the result to the screen
+     <p><div class="style1" id="numCalculatorAvailable">Calculators available:&nbsp;</div></p>-->
+
+</body>
+</html>
