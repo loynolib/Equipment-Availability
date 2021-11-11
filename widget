@@ -1,0 +1,20 @@
+<h3 class="display text-align-center">Equipment Availability</h3>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script><script>
+			$(document).ready(function(){
+				 $('#symwsdiv0').load
+('https://library2.loyno.edu/symws/symws_homepage_backend0.html');
+var refreshID = setInterval(function(){ $('#symwsdiv0').load
+('https://library2.loyno.edu/symws/symws_homepage_backend0.html');
+					  var holdUpNow  = setTimeout(function(){
+						  $('#symwsdiv' + currentDiv).hide();
+						  $('#symwsdiv' + notCurrentDiv).show();
+						  holder = notCurrentDiv;
+						  notCurrentDiv = currentDiv;
+						  currentDiv = holder;
+						  }, 5000);
+					  }, 25000);
+				  $.ajaxSetup({ cache: false });
+			   });
+		</script>
+
+<div border-style="solid" id="symwsdiv0" solid="">&nbsp;</div>
